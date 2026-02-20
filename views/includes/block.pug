@@ -1,0 +1,57 @@
+//- includes/block.pug — block card component
+.well(id='block'+block.block+'chain'+block.chain+'well')
+  form.form-horizontal
+
+    .form-group
+      label.col-sm-3.control-label(for='block'+block.block+'chain'+block.chain+'number')
+        | #{__('Block')}
+        span.tooltip-icon ?
+          span.tooltip-text The sequence number of this block. Block #1 is the Genesis block — the very first block in the chain.
+        | :
+      .col-sm-9
+        .input-group
+          span.input-group-addon #
+          input.form-control(id='block'+block.block+'chain'+block.chain+'number', type='number', value=block.block)
+
+    .form-group
+      label.col-sm-3.control-label(for='block'+block.block+'chain'+block.chain+'nonce')
+        | #{__('Nonce')}
+        span.tooltip-icon ?
+          span.tooltip-text "Number used Once." Miners search for this so the hash starts with 0000. It proves computational work was done.
+        | :
+      .col-sm-9
+         input.form-control(id='block'+block.block+'chain'+block.chain+'nonce', type='text', value=block.nonce)
+
+    .form-group
+      label.col-sm-3.control-label(for='block'+block.block+'chain'+block.chain+'data')
+        | #{__('Data')}
+        span.tooltip-icon ?
+          span.tooltip-text The actual data stored — Bitcoin transactions, smart contract code, or anything else.
+        | :
+      .col-sm-9
+        textarea.form-control(id='block'+block.block+'chain'+block.chain+'data', rows='6', placeholder='Block data...')
+
+    #state.form-group
+      label.col-sm-3.control-label(for='block'+block.block+'chain'+block.chain+'previous')
+        | #{__('Prev')}
+        span.tooltip-icon ?
+          span.tooltip-text The hash of the PREVIOUS block. This is what chains the blocks together. Change one block and all the ones after it break!
+        | :
+      .col-sm-9
+        input.form-control(id='block'+block.block+'chain'+block.chain+'previous', type='text', value=block.previous, disabled)
+
+    #state.form-group
+      label.col-sm-3.control-label(for='block'+block.block+'chain'+block.chain+'hash')
+        | #{__('Hash')}
+        span.tooltip-icon ?
+          span.tooltip-text This block's unique fingerprint. Must start with 0000 to be valid (green). Tamper with any field and it turns red!
+        | :
+      .col-sm-9
+        input.form-control(id='block'+block.block+'chain'+block.chain+'hash', type='text', disabled)
+
+    .form-group
+      .col-sm-3
+        i.icon-spinner.icon-spin.icon-large
+      .col-sm-9
+        button.btn.btn-primary.ladda-button(id='block'+block.block+'chain'+block.chain+'mineButton', data-style='expand-right')
+          span.ladda-label ⛏️ #{__('Mine')}

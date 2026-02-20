@@ -1,0 +1,133 @@
+extends layout
+
+block content
+  .container
+
+    .step-bar
+      a.step-item.active(href='/hash')
+        span.step-num 1
+        | Hash
+      span.step-connector
+      a.step-item(href='/block')
+        span.step-num 2
+        | Block
+      span.step-connector
+      a.step-item(href='/blockchain')
+        span.step-num 3
+        | Blockchain
+      span.step-connector
+      a.step-item(href='/distributed')
+        span.step-num 4
+        | Distributed
+      span.step-connector
+      a.step-item(href='/tokens')
+        span.step-num 5
+        | Tokens
+      span.step-connector
+      a.step-item(href='/coinbase')
+        span.step-num 6
+        | Coinbase
+
+    .page-header-block
+      div
+        h1.page-title SHA256 
+          span.accent Hash
+      span.page-step Step 1 of 6
+
+    .beginner-callout
+      span.callout-icon 🔐
+      .callout-body
+        h4 What is a Hash?
+        p
+          | A hash function takes any input — a word, a sentence, a whole book — and produces a fixed-length 
+          | string of characters (the "hash"). The same input always gives the same hash, but changing even 
+          | one character completely changes the output. This makes hashes ideal for detecting tampering.
+          |  
+          strong Try typing in the box below!
+
+    .try-it-challenge
+      span.try-icon 🧪
+      .try-body
+        h4 Try It!
+        p Type "hello" then change it to "Hello" (capital H). Notice the hash is completely different! This is called the "avalanche effect" — even a tiny change produces a totally different output.
+
+    .well#well1
+      form.form-horizontal
+
+        .form-group
+          label.col-sm-2.control-label(for='data')
+            | #{__('Data')}
+            span.tooltip-icon ?
+              span.tooltip-text The raw data you want to hash. Try typing anything — a name, a number, even a sentence.
+            | :
+          .col-sm-10
+            textarea#data.form-control(rows='7', placeholder='Type anything here...')
+
+        .form-group
+          label.col-sm-2.control-label(for='hash')
+            | #{__('Hash')}
+            span.tooltip-icon ?
+              span.tooltip-text This is the SHA-256 fingerprint of your data. Notice how it changes completely with every keystroke!
+            | :
+          .col-sm-10
+            input#hash.form-control(type='text', disabled, placeholder='Your SHA-256 hash appears here...')
+
+        .hash-stats
+          .stat-chip
+            i.fa.fa-text-width
+            span#hashLength 64
+            | chars
+          .stat-chip
+            i.fa.fa-hashtag
+            span 256
+            | bits
+          .stat-chip
+            i.fa.fa-lock
+            span One-way
+          .stat-chip
+            i.fa.fa-fingerprint
+            span Unique
+
+    .key-takeaways
+      h4 📚 Key Takeaways
+      ul
+        li SHA-256 always produces a 64-character hexadecimal output (256 bits), no matter the input size.
+        li The same input always produces the same hash — this is called being 
+          strong deterministic
+          | .
+        li Changing even one character completely changes the hash — known as the 
+          strong avalanche effect
+          | .
+        li You cannot reverse-engineer the input from the hash — hashing is a 
+          strong one-way function
+          | .
+        li Hashes are the building block of blockchain security — every block uses them.
+
+    .page-nav
+      a.page-nav-btn.prev.disabled(href='#') Home
+      a.page-nav-btn.next(href='/block') Block →
+
+  script.
+    function getText(block, chain) {
+      return $('#data').val();
+    }
+
+    $(function() {
+      $('#data').bind('input propertychange', function() {
+        var h = sha256();
+        $('#hash').val(h);
+        if (h.startsWith('0000')) {
+          $('#hash').removeClass('hash-invalid').addClass('hash-valid');
+        } else {
+          $('#hash').removeClass('hash-valid').addClass('hash-invalid');
+        }
+      });
+    });
+
+    var initialHash = sha256();
+    $('#hash').val(initialHash);
+    if (initialHash.startsWith('0000')) {
+      $('#hash').addClass('hash-valid');
+    } else {
+      $('#hash').addClass('hash-invalid');
+    }

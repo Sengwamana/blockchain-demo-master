@@ -1,0 +1,132 @@
+extends layout
+
+block content
+  .container-fluid
+
+    .step-bar
+      a.step-item(href='/hash')
+        span.step-num 1
+        | Hash
+      span.step-connector
+      a.step-item(href='/block')
+        span.step-num 2
+        | Block
+      span.step-connector
+      a.step-item(href='/blockchain')
+        span.step-num 3
+        | Blockchain
+      span.step-connector
+      a.step-item.active(href='/distributed')
+        span.step-num 4
+        | Distributed
+      span.step-connector
+      a.step-item(href='/tokens')
+        span.step-num 5
+        | Tokens
+      span.step-connector
+      a.step-item(href='/coinbase')
+        span.step-num 6
+        | Coinbase
+
+    .page-header-block
+      div
+        h1.page-title
+          span.accent Distributed 
+          | Blockchain
+      span.page-step Step 4 of 6
+
+    .beginner-callout
+      span.callout-icon 🌐
+      .callout-body
+        h4 What is a Distributed Blockchain?
+        p
+          | In Bitcoin, thousands of computers around the world keep an identical copy of the blockchain.
+          | If a hacker changes one block on 
+          strong Peer A
+          | , that peer's chain no longer matches Peers B and C.
+          | The network automatically rejects the tampered version — the majority always wins.
+          | Notice how editing one peer's block does 
+          strong not
+          |  affect the others!
+
+    .try-it-challenge
+      span.try-icon 🧪
+      .try-body
+        h4 Try It!
+        p Change the data in Block 3 of Peer A. Blocks 3–5 of Peer A turn red, but Peers B and C are untouched! This shows why decentralization matters — a hacker would need to control more than 50% of all peers to successfully tamper with the blockchain (a "51% attack").
+
+    - var peers = {1: 'A', 2: 'B', 3: 'C'}
+    each peer, chain in peers
+      .peer-section
+        span(class='peer-badge peer-' + peer) 🖥 Peer #{peer}
+        .row.row-horizon
+          - var blocks = []
+          - blocks.push({block: 1, chain: chain, nonce: 11316, previous: '0000000000000000000000000000000000000000000000000000000000000000'})
+          - blocks.push({block: 2, chain: chain, nonce: 35230, previous: '000015783b764259d382017d91a36d206d0600e2cbb3567748f46a33fe9297cf'})
+          - blocks.push({block: 3, chain: chain, nonce: 12937, previous: '000012fa9b916eb9078f8d98a7864e697ae83ed54f5146bd84452cdafd043c19'})
+          - blocks.push({block: 4, chain: chain, nonce: 35990, previous: '0000b9015ce2a08b61216ba5a0778545bf4ddd7ceb7bbd85dd8062b29a9140bf'})
+          - blocks.push({block: 5, chain: chain, nonce: 56265, previous: '0000ae8bbc96cf89c68be6e10a865cc47c6c48a9ebec3c6cad729646cefaef83'})
+          each block in blocks
+            .col-xs-7
+              include includes/block
+
+  script.
+    $(function() {
+      setup(1, 1);
+      setup(2, 1);
+      setup(3, 1);
+      setup(4, 1);
+      setup(5, 1);
+
+      setup(1, 2);
+      setup(2, 2);
+      setup(3, 2);
+      setup(4, 2);
+      setup(5, 2);
+
+      setup(1, 3);
+      setup(2, 3);
+      setup(3, 3);
+      setup(4, 3);
+      setup(5, 3);
+    });
+
+    function getText(block, chain) {
+      return $('#block'+block+'chain'+chain+'number').val() +
+             $('#block'+block+'chain'+chain+'nonce').val() +
+             $('#block'+block+'chain'+chain+'data').val() +
+             $('#block'+block+'chain'+chain+'previous').val();
+    }
+
+    function setup(block, chain) {
+      updateHash(block, chain);
+      $('#block'+block+'chain'+chain+'number').bind('input propertychange', function() { updateChain(block, chain); });
+      $('#block'+block+'chain'+chain+'nonce').bind('input propertychange', function() { updateChain(block, chain); });
+      $('#block'+block+'chain'+chain+'data').bind('input propertychange', function() { updateChain(block, chain); });
+      $('#block'+block+'chain'+chain+'mineButton').click(function(e) {
+          e.preventDefault();
+          var l = Ladda.create(this);
+          l.start();
+          setTimeout(function() {
+              mine(block, chain, true);
+              l.stop();
+            }, 250);
+        });
+    }
+
+    .key-takeaways
+      h4 📚 Key Takeaways
+      ul
+        li Bitcoin's blockchain is copied across thousands of computers (nodes/peers) worldwide.
+        li Each peer independently verifies every block — if one peer's chain differs, it's rejected.
+        li The "majority rules" principle means a hacker would need to control &gt;50% of computing power to cheat (a 
+          strong 51% attack
+          | ).
+        li This distributed design removes the need for a central authority (bank, government) — it's 
+          strong trustless
+          | .
+        li Decentralization is what makes Bitcoin censorship-resistant and resilient.
+
+    .page-nav
+      a.page-nav-btn.prev(href='/blockchain') ← Blockchain
+      a.page-nav-btn.next(href='/tokens') Tokens →

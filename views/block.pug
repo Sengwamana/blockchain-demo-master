@@ -1,0 +1,157 @@
+extends layout
+
+block content
+  .container
+
+    .step-bar
+      a.step-item(href='/hash')
+        span.step-num 1
+        | Hash
+      span.step-connector
+      a.step-item.active(href='/block')
+        span.step-num 2
+        | Block
+      span.step-connector
+      a.step-item(href='/blockchain')
+        span.step-num 3
+        | Blockchain
+      span.step-connector
+      a.step-item(href='/distributed')
+        span.step-num 4
+        | Distributed
+      span.step-connector
+      a.step-item(href='/tokens')
+        span.step-num 5
+        | Tokens
+      span.step-connector
+      a.step-item(href='/coinbase')
+        span.step-num 6
+        | Coinbase
+
+    .page-header-block
+      div
+        h1.page-title
+          span.accent Block
+      span.page-step Step 2 of 6
+
+    .beginner-callout
+      span.callout-icon 📦
+      .callout-body
+        h4 What is a Block?
+        p
+          | A block is like a page in a ledger. It contains data, a block number, and a special number called 
+          | a 
+          strong Nonce
+          | . When you hit 
+          strong Mine
+          | , the computer searches for the Nonce that makes the hash start with 
+          strong 0000
+          |  — this is called 
+          strong Proof of Work
+          | . The block turns 
+          span(style='color:#22C55E;font-weight:700') green
+          |  when valid and 
+          span(style='color:#EF4444;font-weight:700') red
+          |  when tampered with.
+
+    .try-it-challenge
+      span.try-icon 🧪
+      .try-body
+        h4 Try It!
+        p Type anything in the Data field — the block turns red because the hash no longer starts with 0000. Now click "Mine" and watch the computer try thousands of nonces until it finds one that makes the hash valid again!
+
+    #miningBanner.mining-banner
+      .mining-pulse
+      span ⛏️ Mining... Searching for a Nonce that makes the hash start with 0000 (this simulates Bitcoin's Proof of Work)
+
+    .well#block1chain1well
+      form.form-horizontal
+
+        .form-group
+          label.col-sm-2.control-label(for='block1chain1number')
+            | #{__('Block')}
+            span.tooltip-icon ?
+              span.tooltip-text The sequential number of this block. Block #1 is always the Genesis block.
+            | :
+          .col-sm-10
+            .input-group
+              span.input-group-addon #
+              input#block1chain1number.form-control(type='number', value='1')
+
+        .form-group
+          label.col-sm-2.control-label(for='block1chain1nonce')
+            | #{__('Nonce')}
+            span.tooltip-icon ?
+              span.tooltip-text "Number used Once" — the magic number miners search for. It makes the hash start with 0000.
+            | :
+          .col-sm-10
+             input#block1chain1nonce.form-control(type='text', value='72608')
+
+        .form-group
+          label.col-sm-2.control-label(for='block1chain1data')
+            | #{__('Data')}
+            span.tooltip-icon ?
+              span.tooltip-text Any data to store — transactions, messages, anything. Try editing it and watch the hash change!
+            | :
+          .col-sm-10
+            textarea#block1chain1data.form-control(rows='8', placeholder='Enter data to store in this block...')
+
+        #state.form-group
+          label.col-sm-2.control-label(for='block1chain1hash')
+            | #{__('Hash')}
+            span.tooltip-icon ?
+              span.tooltip-text The block is valid (green) when the hash starts with 0000. Change any field and it goes red!
+            | :
+          .col-sm-10
+            input#block1chain1hash.form-control(type='text', disabled)
+
+        .form-group
+          .col-sm-2
+            i.icon-spinner.icon-spin.icon-large
+          .col-sm-10
+            button#block1chain1mineButton.btn.btn-primary.ladda-button(data-style='expand-right')
+              span.ladda-label ⛏️ #{__('Mine')}
+
+  script.
+    $(function() {
+      $('#block1chain1number').bind('input propertychange', function() { updateHash(1, 1); });
+      $('#block1chain1nonce').bind('input propertychange', function() { updateHash(1, 1); });
+      $('#block1chain1data').bind('input propertychange', function() { updateHash(1, 1); });
+      mineButtonAnimation(1, 1);
+      updateHash(1, 1);
+    });
+
+    function getText(block, chain) {
+      return $('#block'+block+'chain'+chain+'number').val() +
+             $('#block'+block+'chain'+chain+'nonce').val() +
+             $('#block'+block+'chain'+chain+'data').val();
+    }
+
+    function mineButtonAnimation(block, chain) {
+      $('#block'+block+'chain'+chain+'mineButton').click(function(e) {
+          e.preventDefault();
+          $('#miningBanner').addClass('active');
+          var l = Ladda.create(this);
+          l.start();
+          setTimeout(function() {
+              mine(block, chain, false);
+              l.stop();
+              $('#miningBanner').removeClass('active');
+            }, 250);
+        });
+    }
+
+    .key-takeaways
+      h4 📚 Key Takeaways
+      ul
+        li A block bundles data together with a block number and a nonce.
+        li Mining is the process of finding a nonce that makes the hash start with a certain number of zeros (e.g., 0000).
+        li This process is called 
+          strong Proof of Work
+          |  — it proves the miner did computational effort.
+        li In Bitcoin, miners compete to find the nonce first — the winner gets a reward.
+        li The more leading zeros required, the harder mining becomes (exponentially more guesses needed).
+
+    .page-nav
+      a.page-nav-btn.prev(href='/hash') ← Hash
+      a.page-nav-btn.next(href='/blockchain') Blockchain →
